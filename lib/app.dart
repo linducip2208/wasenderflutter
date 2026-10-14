@@ -10,6 +10,7 @@ import 'features/dashboard/dashboard_screen.dart';
 import 'features/connection/connection_screen.dart';
 import 'features/wasender/contacts_screen.dart';
 import 'features/wasender/groups_screen.dart';
+import 'features/wasender/suppression_screen.dart';
 import 'features/wasender/templates_screen.dart';
 import 'features/wasender/compose_screen.dart';
 import 'features/wasender/queue_screen.dart';
@@ -19,6 +20,7 @@ import 'features/wabadak/inbox_screen.dart';
 import 'features/wabadak/chat_screen.dart';
 import 'features/settings/settings_screen.dart';
 import 'features/settings/storage_screen.dart';
+import 'features/settings/audit_log_screen.dart';
 import 'features/settings/about_screen.dart';
 import 'features/license/status_screen.dart';
 
@@ -34,8 +36,13 @@ class AppScope extends InheritedWidget {
     required super.child,
   });
 
-  static AppScope of(BuildContext c) =>
-      c.dependOnInheritedWidgetOfExactType<AppScope>()!;
+  // Sengaja TIDAK memakai dependOn... agar aman dipanggil dari initState
+  // (AppScope tidak pernah berubah; updateShouldNotify selalu false).
+  static AppScope of(BuildContext c) {
+    final w = c.getInheritedWidgetOfExactType<AppScope>();
+    assert(w != null, 'AppScope tidak ditemukan di atas widget ini.');
+    return w!;
+  }
 
   @override
   bool updateShouldNotify(AppScope old) => false;
@@ -108,6 +115,7 @@ class _WasenderAppState extends State<WasenderApp> {
             '/connection': (_) => const ConnectionScreen(),
             '/contacts': (_) => const ContactsScreen(),
             '/groups': (_) => const GroupsScreen(),
+            '/suppression': (_) => const SuppressionScreen(),
             '/templates': (_) => const TemplatesScreen(),
             '/compose': (_) => const ComposeScreen(),
             '/queue': (_) => const QueueScreen(),
@@ -116,6 +124,7 @@ class _WasenderAppState extends State<WasenderApp> {
             '/inbox': (_) => const InboxScreen(),
             '/settings': (_) => const SettingsScreen(),
             '/storage': (_) => const StorageScreen(),
+            '/audit': (_) => const AuditLogScreen(),
             '/about': (_) => const AboutScreen(),
           },
           onGenerateRoute: (s) {

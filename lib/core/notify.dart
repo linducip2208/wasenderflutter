@@ -10,6 +10,9 @@ class NotifyService {
       FlutterLocalNotificationsPlugin();
   static bool _ready = false;
 
+  /// Inisialisasi ringan TANPA meminta izin: dialog izin sistem tidak boleh
+  /// muncul saat startup (memblokir Splash maupun integration test).
+  /// Izin diminta malas (lazy) saat notifikasi pertama dibutuhkan.
   static Future<void> init() async {
     try {
       const android = AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -18,7 +21,6 @@ class NotifyService {
           .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin
           >();
-      await a?.requestNotificationsPermission();
       await a?.createNotificationChannel(
         const AndroidNotificationChannel(
           'wabadak_inbox',
@@ -36,6 +38,12 @@ class NotifyService {
   static Future<void> inbound(String title, String body) async {
     if (!_ready) return;
     try {
+      // Minta izin hanya saat benar-benar akan menampilkan notifikasi.
+      final a = _pl
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      await a?.requestNotificationsPermission();
       final short = body.length > 120 ? '${body.substring(0, 120)}…' : body;
       await _pl.show(
         title.hashCode & 0x7fffffff,

@@ -1,15 +1,16 @@
 # FINAL AUDIT — Wasender + Wabadak v1.0.0 (2026-10-14, Asia/Jakarta)
 
-Repo: https://github.com/linducip2208/wasenderflutter (branch `main`, commit `42bce05` + update ini).
+Repo: https://github.com/linducip2208/wasenderflutter (branch `main`).
 
 ## Ringkasan fitur selesai
-- 14 layar Android: splash, aktivasi, dashboard, koneksi, kontak (CRUD, label,
-  filter label, impor/ekspor CSV), grup kontak (CRUD + anggota + filter kampanye),
-  template, compose (pratinjau, konfirmasi, pilih-semua, jadwal WIB),
-  antrean (share intent, pause/cancel/resume, riwayat percobaan, banner due),
-  riwayat, laporan CSV, inbox (arsip, pencarian, catat manual + notifikasi),
-  chat (balasan share, quick reply, label+catatan), pengaturan, storage
-  (backup/restore/wipe), tentang.
+- 16 layar Android: splash, aktivasi, dashboard (kartu due), koneksi, kontak
+  (CRUD, label, filter label, impor/ekspor CSV), grup kontak (CRUD + anggota +
+  filter kampanye), suppression list, template, compose (pratinjau, konfirmasi,
+  pilih-semua, jadwal WIB), antrean (share intent, pause/cancel/resume, riwayat
+  percobaan, banner due), riwayat, laporan CSV, inbox (arsip, pencarian, catat
+  manual + notifikasi lazy-permission), chat (balasan share, quick reply,
+  label+catatan), pengaturan, storage (backup/restore/wipe), log audit, tentang.
+- Label aplikasi: "Wasender + Wabadak". CI GitHub Actions (format+analyze+test).
 - Lisensi penuh: 7 state, device binding, cache aman, policy expiry waktu
   server, revalidasi, pesan konfigurasi jujur saat base URL kosong.
 - SQLite v4 + 12 tabel + FTS + migrasi v1→v4 + recovery DB korup + backup/restore
@@ -29,8 +30,9 @@ Repo: https://github.com/linducip2208/wasenderflutter (branch `main`, commit `42
 
 ## Verifikasi (terakhir, sesi ini)
 - `flutter analyze`: **No issues found** (0 error/warning/info).
-- `flutter test`: **30/30 lulus** (license 7, core 7, api-parse 3, database 8,
-  widget+adapter 5).
+- `flutter test`: **30/30 lulus**.
+- Integration test emulator (API 37): **2/2 skenario lulus**; menemukan &
+  memperbaiki bug `AppScope.of` di `initState`. Rincian: docs/TESTING.md.
 - Release APK upload-signed, terverifikasi apksigner:
   `Signer DN: CN=Wasender Wabadak, OU=Mobile, O=Wasender, L=Jakarta, C=ID`
   (bukan Android Debug). Desugaring diaktifkan untuk flutter_local_notifications.
@@ -40,7 +42,7 @@ Repo: https://github.com/linducip2208/wasenderflutter (branch `main`, commit `42
 
 ## Lokasi APK (terverifikasi ada)
 - `build/app/outputs/flutter-apk/app-debug.apk` (150,2 MB)
-- `build/app/outputs/flutter-apk/app-release.apk` (55,0 MB, upload-signed)
+- `build/app/outputs/flutter-apk/app-release.apk` (56,8 MB, upload-signed)
 
 ## Cara uji di HP
 Pasang release APK → isi base URL + key → tambah kontak/grup → tulis kampanye →

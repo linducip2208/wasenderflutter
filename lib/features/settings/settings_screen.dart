@@ -95,6 +95,12 @@ class _S extends State<SettingsScreen> {
           onTap: () => Navigator.pushNamed(context, '/storage'),
         ),
         ListTile(
+          leading: const Icon(Icons.receipt_long),
+          title: const Text('Log audit'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => Navigator.pushNamed(context, '/audit'),
+        ),
+        ListTile(
           leading: const Icon(Icons.info),
           title: const Text('Tentang & lisensi app'),
           trailing: const Icon(Icons.chevron_right),

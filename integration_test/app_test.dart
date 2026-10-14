@@ -1,12 +1,15 @@
 /// Integration test Android (dijalankan di HP/emulator, BUKAN di host).
 ///
-/// Jalankan dari root project saat HP Android tersambung:
-///   flutter test integration_test
+/// Jalankan dari root project saat HP/emulator Android tersambung, misal:
+///   flutter test integration_test -d emulator-5554
 ///
+/// Catatan lingkungan: pada emulator API 37 di sini, DDS host gagal start
+/// sehingga dijalankan dengan `--no-dds` (keterbatasan tooling, bukan app).
 /// Tanpa activation key yang valid, aplikasi berhenti di gerbang lisensi —
 /// itu yang diverifikasi di sini (jalur jujur, tanpa mock keygen).
 /// Alur berlisensi penuh (dashboard, kirim share, inbox) diuji manual
-/// mengikuti docs/TESTING.md skenario 1–17.
+/// mengikuti docs/TESTING.md skenario 1–17. Tereksekusi nyata: emulator
+/// wasender_test (API 37, 2026-10-14).
 library;
 
 import 'package:flutter_test/flutter_test.dart';
@@ -57,9 +60,13 @@ void main() {
         adapters: AdapterRegistry.defaultRegistry(),
       ),
     );
-    await t.pumpAndSettle(const Duration(seconds: 2));
+    // Emulator lambat: pump eksplisit, bukan pumpAndSettle tanpa batas.
+    await t.pump(const Duration(seconds: 2));
+    await t.pump(const Duration(seconds: 1));
+    expect(find.text('Aktivasi Lisensi'), findsOneWidget);
     await t.tap(find.text('Lihat status lisensi'));
-    await t.pumpAndSettle();
+    await t.pump(const Duration(seconds: 1));
+    await t.pump(const Duration(seconds: 1));
     expect(find.text('Status Lisensi'), findsOneWidget);
     await adb.close();
   });

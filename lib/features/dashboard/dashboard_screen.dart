@@ -10,7 +10,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _D extends State<DashboardScreen> {
-  int _contacts = 0, _queued = 0, _convs = 0, _campaigns = 0;
+  int _contacts = 0, _queued = 0, _convs = 0, _campaigns = 0, _due = 0;
   bool _loading = true;
 
   @override
@@ -33,6 +33,7 @@ class _D extends State<DashboardScreen> {
       _convs = (c.first['n'] as int?) ?? 0;
       final k = await adb.db.rawQuery('SELECT COUNT(*) n FROM campaigns');
       _campaigns = (k.first['n'] as int?) ?? 0;
+      _due = await QueueRepo(adb).dueCount();
     } catch (_) {}
     if (mounted) setState(() => _loading = false);
   }
@@ -82,6 +83,19 @@ class _D extends State<DashboardScreen> {
                         subtitle: Text(
                           'Koneksi protokol langsung BLOCKED (lihat Koneksi). '
                           'Pesan dikirim via aplikasi WhatsApp resmi, tanpa bypass enkripsi.',
+                        ),
+                      ),
+                    ),
+                  if (_due > 0)
+                    Card(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      child: ListTile(
+                        leading: const Icon(Icons.alarm),
+                        title: Text('$_due pesan jadwalnya tiba'),
+                        trailing: TextButton(
+                          onPressed: () =>
+                              Navigator.pushNamed(context, '/queue'),
+                          child: const Text('Buka antrean'),
                         ),
                       ),
                     ),
@@ -150,6 +164,12 @@ class _D extends State<DashboardScreen> {
                   _tile(context, 'Laporan', Icons.bar_chart, '/reports'),
                   _tile(context, 'Kontak', Icons.contacts, '/contacts'),
                   _tile(context, 'Grup kontak', Icons.group, '/groups'),
+                  _tile(
+                    context,
+                    'Suppression list',
+                    Icons.block,
+                    '/suppression',
+                  ),
                   _tile(context, 'Template pesan', Icons.abc, '/templates'),
                   const SizedBox(height: 8),
                   Text(

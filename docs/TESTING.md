@@ -22,11 +22,19 @@ flutter build apk --release   # bila signing aman tersedia
   dashboard (4 kartu menu), inbox (banner BLOCKED tampil).
 
 ## Integration test perangkat (`integration_test/app_test.dart`)
-Dijalankan di HP Android yang tersambung (`flutter test integration_test`):
-memverifikasi boot → gerbang lisensi tampil tanpa key + layar status dapat
-dibuka. Di lingkungan build ini tidak ada perangkat Android (hanya
-Windows/Chrome/Edge), sehingga integration test BELUM dieksekusi — dijalankan
-manual di HP mengikuti skenario 1–17 di bawah.
+Tereksekusi nyata di emulator wasender_test (API 37, x86_64):
+`flutter test integration_test -d emulator-5554 --no-dds` → **2/2 skenario
+lulus** (boot → gerbang lisensi tampil tanpa key; navigasi ke layar status).
+Catatan jujur:
+- Flag `--no-dds` diperlukan karena DDS host gagal start pada emulator ini
+  (keterbatasan tooling, bukan aplikasi).
+- Satu error harness `streamListen ... GoldenFileComparator` muncul saat loading
+  (quirk VM service API 37) tetapi tidak menggagalkan skenario.
+- Uji ini menemukan bug nyata: `AppScope.of` memakai `dependOn...` sehingga
+  crash dari `initState` (red screen) — diperbaiki dengan
+  `getInheritedWidgetOfExactType`, lalu lulus.
+- Alur berlisensi penuh (skenario 1–17 dengan keygen + nomor WA sungguhan)
+  tetap manual di HP oleh pemilik.
 
 ## Matriks manual (17 skenario brief)
 1. Key valid → ACTIVE, masuk dashboard. 2. Key invalid → pesan jelas.
