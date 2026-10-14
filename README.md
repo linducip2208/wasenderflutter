@@ -1,6 +1,8 @@
 # Wasender + Wabadak (Android-native, Flutter)
 
-Aplikasi Android untuk **Wasender** (kontak, kampanye, template, antrean,
+Repo: https://github.com/linducip2208/wasenderflutter
+
+Aplikasi Android untuk **Wasender** (kontak, grup, kampanye, template, antrean,
 jadwal, riwayat, laporan) dan **Wabadak** (inbox, balasan, label, catatan,
 arsip). Seluruh operasional di HP — tanpa web admin, tanpa VPS WhatsApp.
 

@@ -1,60 +1,59 @@
 # FINAL AUDIT — Wasender + Wabadak v1.0.0 (2026-10-14, Asia/Jakarta)
 
+Repo: https://github.com/linducip2208/wasenderflutter (branch `main`, commit `42bce05` + update ini).
+
 ## Ringkasan fitur selesai
-- Splash → aktivasi → dashboard → 13 rute (koneksi, kontak, template, compose,
-  antrean, riwayat, laporan, inbox, chat, pengaturan, storage, tentang).
+- 14 layar Android: splash, aktivasi, dashboard, koneksi, kontak (CRUD, label,
+  filter label, impor/ekspor CSV), grup kontak (CRUD + anggota + filter kampanye),
+  template, compose (pratinjau, konfirmasi, pilih-semua, jadwal WIB),
+  antrean (share intent, pause/cancel/resume, riwayat percobaan, banner due),
+  riwayat, laporan CSV, inbox (arsip, pencarian, catat manual + notifikasi),
+  chat (balasan share, quick reply, label+catatan), pengaturan, storage
+  (backup/restore/wipe), tentang.
 - Lisensi penuh: 7 state, device binding, cache aman, policy expiry waktu
   server, revalidasi, pesan konfigurasi jujur saat base URL kosong.
-- SQLite v3 + 12 tabel + FTS + migrasi + recovery DB korup + backup/restore JSON
-  + audit log + impor CSV tervalidasi + ekspor CSV laporan.
-- Wasender: CRUD kontak, opt-in/suppression, template {{var}}, pratinjau,
-  konfirmasi kampanye, antrean (pause/resume/cancel), retry+backoff,
-  jadwal WIB + disclaimer background, riwayat + laporan data nyata.
-- Wabadak: daftar/arsip/sapa pencarian lokal, chat + balasan via WA resmi,
-  catat pesan masuk manual, label+catatan, quick reply, penanda unread.
-- Keamanan: secure storage sesi+lisensi, tanpa secret di source, permission
-  minimal (INTERNET+NETWORK_STATE), sanitasi CSV, batas media 10 MB.
+- SQLite v4 + 12 tabel + FTS + migrasi v1→v4 + recovery DB korup + backup/restore
+  JSON + audit log + impor CSV tervalidasi + dedup per-msisdn di kode.
+- Keamanan: secure storage sesi+lisensi, tanpa secret di source/repo, permission
+  minimal (INTERNET, NETWORK_STATE, POST_NOTIFICATIONS), sanitasi CSV, batas
+  media 10 MB. Keystore upload + key.properties di-.gitignore, TIDAK di-push.
 
 ## Fitur gagal / diblokir (jujur)
 - **BLOCKED — koneksi protokol WA langsung** (QR login, socket, auto-receive,
-  receipt delivered/read, reconnect): tidak ada library Dart/Flutter yang
-  terbukti lokal di APK (bukti: docs/WHATSAPP_COMPATIBILITY.md).
-  `BlockedProtocolAdapter` + banner UI menyatakan ini; bukan "selesai".
-- **Menunggu eksternal — 2 endpoint keygen** (activate/validate, kontrak di
-  docs/LICENSE_API.md): client+parsing+test selesai, validasi E2E butuh web Anda.
-- **Release signing produksi**: APK release memakai debug signing template;
-  ganti keystore sendiri (docs/RELEASE.md). Tidak production-ready penuh
-  sebelum signing + uji HP + keygen live.
+  receipt delivered/read): tidak ada library Dart/Flutter yang terbukti lokal di
+  APK (bukti: docs/WHATSAPP_COMPATIBILITY.md). `BlockedProtocolAdapter` + banner
+  UI menyatakan ini; bukan "selesai".
+- **Menunggu eksternal — 2 endpoint keygen** (kontrak: docs/LICENSE_API.md) dan
+  eksekusi `integration_test` di HP fisik (tidak ada perangkat Android di
+  lingkungan build ini).
 
-## Library & bukti kompatibilitas
-Aktif: flutter_secure_storage (Keystore), sqflite, share_plus/url_launcher
-(deep-link WA resmi), http, timezone+intl, provider, file_picker, qr_flutter
-(cadangan QR masa depan). Audit Baileys/whatsapp-web.js/whatsmeow →
-  tidak dapat jalan lokal di APK tanpa server (dilarang brief).
-
-## Hasil verifikasi
-- `flutter analyze`: 0 error, 0 warning, 7 info minor (async-gap/docs).
-- `flutter test`: **22/22 lulus** (license 7, core 7, api-parse 3, widget+adapter 5).
-- Build: debug OK + release OK.
+## Verifikasi (terakhir, sesi ini)
+- `flutter analyze`: **No issues found** (0 error/warning/info).
+- `flutter test`: **30/30 lulus** (license 7, core 7, api-parse 3, database 8,
+  widget+adapter 5).
+- Release APK upload-signed, terverifikasi apksigner:
+  `Signer DN: CN=Wasender Wabadak, OU=Mobile, O=Wasender, L=Jakarta, C=ID`
+  (bukan Android Debug). Desugaring diaktifkan untuk flutter_local_notifications.
 - Grep lib: tanpa TODO/dummy/secret. Semua tanggal via Asia/Jakarta.
-- Tanpa web admin / backend WA tersembunyi (diperiksa: hanya client HTTP keygen).
+- Tanpa web admin / backend WA tersembunyi (hanya client HTTP keygen).
+- Git: `git status` sebelum push diverifikasi bebas key.properties/*.jks/build.
 
-## Lokasi APK
-- `D:\project laravel\flutterwasender\build\app\outputs\flutter-apk\app-debug.apk` (150,2 MB)
-- `D:\project laravel\flutterwasender\build\app\outputs\flutter-apk\app-release.apk` (54,7 MB, debug-signed)
+## Lokasi APK (terverifikasi ada)
+- `build/app/outputs/flutter-apk/app-debug.apk` (150,2 MB)
+- `build/app/outputs/flutter-apk/app-release.apk` (55,0 MB, upload-signed)
 
 ## Cara uji di HP
-Aktifkan sumber tak dikenal → pasang release APK → isi base URL+key →
-tambah kontak → tulis kampanye → kirim via WA resmi → cek antrean/riwayat/
-laporan → inbox catat manual + balas → backup/restore.
+Pasang release APK → isi base URL + key → tambah kontak/grup → tulis kampanye →
+kirim via WA resmi → cek antrean/riwayat/laporan → inbox catat manual + balas →
+backup/restore. `flutter test integration_test` saat HP tersambung.
 
 ## Risiko & batasan
-Protokol WA dapat berubah sepihak; nomor berisiko dibatasi bila spam —
-pakai opt-in + kirim bertahap. Jadwal tidak tepat-waktu bila app di-force-stop/
-baterai dibatasi. Lisensi otoritatif di keygen; client tidak anti-crack total.
+Protokol WA dapat berubah sepihak; hormati opt-in + kirim bertahap. Jadwal tidak
+tepat-waktu bila app di-force-stop/baterai dibatasi (banner due + disclaimer di
+UI). Lisensi otoritatif di keygen; client tidak anti-crack total.
 
-## File diubah/dibuat
-Baru: pubspec, AndroidManifest (permission+queries), lib/{main,app,config,
-core(2),whatsapp(2),license(1),data(1),features(13),widgets(1)} (23 file),
-docs/(8), test/(4), README. Repo bukan git (git status N/A); Flutter 3.41.6 /
-Dart 3.11.4 / SDK 36.1.0 / JDK 21.
+## File (repo, 60+ file)
+`lib/` 25 file (main, app, config, core×3, whatsapp×2, license, data,
+features×14, widgets), `test/` 5, `integration_test/` 1, `docs/` 8, README,
+pubspec, AndroidManifest, build.gradle.kts (upload signing + desugar).
+Env: Flutter 3.41.6 / Dart 3.11.4 / SDK 36.1.0 / JDK 21.

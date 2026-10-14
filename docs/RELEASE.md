@@ -4,16 +4,25 @@
 `pubspec.yaml` → `1.0.0+1` (versionName/versionCode Android).
 
 ## Signing produksi (jangan commit keystore/password)
-Buat `android/key.properties` (sudah di-.gitignore template? pastikan):
+Keystore upload sudah dibuat lokal: `android/wasender-upload.jks` + konfigurasi
+`android/key.properties` (keduanya di-.gitignore, TIDAK masuk repo).
+`android/app/build.gradle.kts` memakai signing `upload` bila file ada, fallback
+`debug` bila tidak ada. Verifikasi:
+```powershell
+D:\sdk\build-tools\36.1.0\apksigner.bat verify --print-certs build\app\outputs\flutter-apk\app-release.apk
+# Signer #1 certificate DN: CN=Wasender Wabadak, ... (bukan Android Debug)
+```
+Untuk keystore lain/baru, timpa file di atas (JANGAN commit) atau sesuaikan
+`android/key.properties`:
 ```properties
 storePassword=***
 keyPassword=***
 keyAlias=upload
-storeFile=C:/aman/wasender-upload.jks
+storeFile=wasender-upload.jks
 ```
-Lalu di `android/app/build.gradle.kts` ganti blok `release` dengan
-`signingConfigs` dari key.properties (lihat komentar TODO bawaan).
-Jangan mencetak password/token ke log CI.
+Jangan mencetak password/token ke log CI. Backup keystore + password di tempat
+aman di luar repo — kehilangan = tidak bisa update rilis Play Store dengan
+sertifikat sama.
 
 ## Checklist rilis
 - [ ] `flutter analyze` bersih, `flutter test` hijau.
