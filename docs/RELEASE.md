@@ -24,6 +24,14 @@ Jangan mencetak password/token ke log CI. Backup keystore + password di tempat
 aman di luar repo — kehilangan = tidak bisa update rilis Play Store dengan
 sertifikat sama.
 
+## App bundle Play Store
+```powershell
+flutter build appbundle --release
+# -> build/app/outputs/bundle/release/app-release.aab (upload-signed)
+```
+Unggah AAB ke Play Console (format yang diminta Google Play). APK tetap untuk
+distribusi langsung (sideload).
+
 ## Checklist rilis
 - [ ] `flutter analyze` bersih, `flutter test` hijau.
 - [ ] `docs/FINAL_AUDIT.md` menyatakan status BLOCKED apa adanya.

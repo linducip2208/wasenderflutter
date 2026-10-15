@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../app.dart';
 import '../../widgets/states.dart';
 
@@ -30,6 +31,13 @@ class _S extends State<StorageScreen> {
       setState(
         () => _info =
             'Backup tersimpan (TIDAK terenkripsi, lindungi file ini):\n${f.path}',
+      );
+      if (!mounted) return;
+      // Tawarkan share sheet agar pengguna bisa menyimpan ke Drive/HP lain —
+      // direktori dokumen aplikasi tidak mudah diakses manual.
+      await Share.shareXFiles(
+        [XFile(f.path)],
+        text: 'Backup Wasender+Wabadak (TIDAK terenkripsi — jaga kerahasiaannya)',
       );
     } catch (e) {
       setState(() => _info = 'Gagal backup: $e');

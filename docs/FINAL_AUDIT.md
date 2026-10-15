@@ -40,9 +40,11 @@ Repo: https://github.com/linducip2208/wasenderflutter (branch `main`).
 - Tanpa web admin / backend WA tersembunyi (hanya client HTTP keygen).
 - Git: `git status` sebelum push diverifikasi bebas key.properties/*.jks/build.
 
-## Lokasi APK (terverifikasi ada)
+## Lokasi artefak (terverifikasi ada)
 - `build/app/outputs/flutter-apk/app-debug.apk` (150,2 MB)
-- `build/app/outputs/flutter-apk/app-release.apk` (56,8 MB, upload-signed)
+- `build/app/outputs/flutter-apk/app-release.apk` (57,2 MB, upload-signed)
+- `build/app/outputs/bundle/release/app-release.aab` (45,8 MB, Play Store)
+- Ikon launcher kustom (`assets/icon/icon.png`, bubble-W hijau).
 
 ## Cara uji di HP
 Pasang release APK → isi base URL + key → tambah kontak/grup → tulis kampanye →

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:wasender_wabadak/core/jakarta_time.dart';
 import 'package:wasender_wabadak/core/result.dart';
 import 'package:wasender_wabadak/data/database.dart';
@@ -29,11 +30,17 @@ void main() {
     expect(sanitizeCsvCell('x' * 600).length, 500);
   });
 
-  test('waktu Jakarta UTC+7', () {
+  test('waktu Jakarta UTC+7 + format Indonesia', () async {
     ensureJakartaTimeInitialized();
     final j = toJakarta(DateTime.utc(2026, 10, 14, 0, 0));
     expect(j.hour, 7);
     expect(jakartaZoneName, 'Asia/Jakarta');
+    await initializeDateFormatting('id_ID', null);
+    expect(
+      formatJakarta(DateTime.utc(2026, 10, 14), pattern: 'MMMM'),
+      'Oktober',
+    );
+    expect(formatJakartaFull(DateTime.utc(2026, 10, 14)), contains('Rabu'));
   });
 
   test('CSV header invalid ditolak', () async {
